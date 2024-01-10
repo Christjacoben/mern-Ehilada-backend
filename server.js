@@ -304,7 +304,10 @@ app.use(express.json());
 // Serve static files from the "uploads" directory
 app.use("/uploads", expressStatic(path.join(__dirname, "uploads")));
 app.use("/uploads", express.static("uploads"));
-
+app.use(express.static(path.join(__dirname, "dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 // Secret key for JWT signing (should be kept secret in a real application)
 const JWT_SECRET_KEY = "mysecretkey";
 
