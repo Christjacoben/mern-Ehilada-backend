@@ -20,7 +20,14 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 const expressStatic = require("express").static;
 app.use(bodyParser.json());
-app.use(cors());
+
+const corsOptions = {
+  origin: "https://ehilada.com", // Replace with your actual frontend domain
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
