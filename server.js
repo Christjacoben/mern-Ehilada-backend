@@ -11,6 +11,7 @@ const { body, validationResult } = require("express-validator");
 const rateLimit = require("express-rate-limit");
 const multer = require("multer");
 const path = require("path");
+require(`dotenv`).config();
 const { Schema } = mongoose;
 
 const app = express();
@@ -27,13 +28,10 @@ const apiLimiter = rateLimit({
   message: "Too many requests from this IP, please try again later.",
 });
 
-mongoose.connect(
-  "mongodb+srv://ehilada873:CjKXxrpsmWNjIL43@e-hilada.watxvoh.mongodb.net/?retryWrites=true&w=majority",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
@@ -299,6 +297,7 @@ app.use(express.json());
 // Serve static files from the "uploads" directory
 app.use("/uploads", expressStatic(path.join(__dirname, "uploads")));
 app.use("/uploads", express.static("uploads"));
+
 // Secret key for JWT signing (should be kept secret in a real application)
 const JWT_SECRET_KEY = "mysecretkey";
 
