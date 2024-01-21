@@ -23,7 +23,7 @@ const expressStatic = require("express").static;
 app.use(bodyParser.json());
 
 const corsOptions = {
-  origin: "https://ehilada.com", // Replace with your actual frontend domain
+  origin: "https://ehilada.com",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
@@ -756,11 +756,12 @@ app.post(
   async (req, res) => {
     try {
       const { classId, userLink, points, activityTitle } = req.body;
-      const user = req.user.userId;
+      const userId = req.user.userId;
 
       // Find an existing submission with the same activityTitle
       const existingSubmission = await Submission.findOne({
         activityTitle,
+        user: userId,
       }).populate("user");
 
       if (existingSubmission) {
@@ -788,7 +789,7 @@ app.post(
         // Create a new submission record
         const submission = new Submission({
           classId,
-          user,
+          user: userId,
           userLink,
           uploadedFile: req.file ? req.file.path : null,
           points,
