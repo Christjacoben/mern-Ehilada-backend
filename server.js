@@ -23,7 +23,7 @@ const expressStatic = require("express").static;
 app.use(bodyParser.json());
 
 const corsOptions = {
-  origin: "https://ehilada.com", // Replace with your actual frontend domain
+  origin: "http://localhost:5173", // Replace with your actual frontend domain
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
@@ -841,10 +841,10 @@ app.post("/api/activities", authenticateJwt, async (req, res) => {
 
     const newActivity = new Activity({
       activityTitle,
-      instructions,
-      link,
+      instructions: instructions !== undefined ? instructions : null,
+      link: link !== undefined ? link : null,
       points,
-      dueDate: new Date(dueDate), // Parse dueDate as a Date
+      dueDate: dueDate ? new Date(dueDate) : null, // Parse dueDate as a Date
       scheduleDateTime: scheduleDateTime ? new Date(scheduleDateTime) : null,
       classId, // Use the 'class' field to associate the activity with the class
     });
