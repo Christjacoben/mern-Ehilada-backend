@@ -23,7 +23,7 @@ const expressStatic = require("express").static;
 app.use(bodyParser.json());
 
 const corsOptions = {
-  origin: "http://localhost:5173", // Replace with your actual frontend domain
+  origin: "https://ehilada.com", // Replace with your actual frontend domain
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
