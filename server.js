@@ -265,7 +265,11 @@ const userQuizSubmissionSchema = new mongoose.Schema({
       questionUserAnswerPairs: [
         {
           question: String,
-          answer: String,
+          answer: {
+            index: Number,
+            label: String,
+            type: mongoose.Schema.Types.Mixed,
+          },
         },
       ],
       userScore: Number,
@@ -285,7 +289,6 @@ const UserQuizSubmission = mongoose.model(
   "UserQuizSubmission",
   userQuizSubmissionSchema
 );
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Set up multer for file uploads
 // Define a storage engine for multer
@@ -541,7 +544,6 @@ app.post(
 );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 app.post(
   "/api/quiz/submit",
   authenticateJwt,
@@ -556,7 +558,6 @@ app.post(
         userScore,
         essayAnswer,
       } = req.body;
-
       const file = req.file;
 
       const fileData = {
@@ -564,6 +565,7 @@ app.post(
       };
 
       const parsedQuestionUserAnswerPairs = JSON.parse(questionUserAnswerPairs);
+
       // Find the user's existing submissions or create a new submission if none exist
       const existingSubmission = await UserQuizSubmission.findOne({
         user,
@@ -574,7 +576,18 @@ app.post(
       if (existingSubmission) {
         // Add a new submission to the submissions array
         existingSubmission.submissions.push({
-          questionUserAnswerPairs: parsedQuestionUserAnswerPairs,
+          questionUserAnswerPairs: parsedQuestionUserAnswerPairs.map(
+            (item) => ({
+              question: item.question,
+              answer:
+                typeof item.answer === "string"
+                  ? item.answer
+                  : {
+                      index: item.answer ? item.answer.index : undefined,
+                      label: item.answer ? item.answer.label : undefined,
+                    },
+            })
+          ),
           userScore,
         });
 
@@ -588,7 +601,18 @@ app.post(
           quizTitle,
           submissions: [
             {
-              questionUserAnswerPairs: parsedQuestionUserAnswerPairs,
+              questionUserAnswerPairs: parsedQuestionUserAnswerPairs.map(
+                (item) => ({
+                  question: item.question,
+                  answer:
+                    typeof item.answer === "string"
+                      ? item.answer
+                      : {
+                          index: item.answer ? item.answer.index : undefined,
+                          label: item.answer ? item.answer.label : undefined,
+                        },
+                })
+              ),
               userScore,
             },
           ],
