@@ -23,7 +23,7 @@ const expressStatic = require("express").static;
 app.use(bodyParser.json());
 
 const corsOptions = {
-  origin: "https://ehilada.com",
+  origin: "https://mern-ehilada.onrender.com",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
